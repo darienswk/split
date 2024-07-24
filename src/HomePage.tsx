@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Grid, Typography, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, FormControlLabel, FormLabel, Radio, RadioGroup, Button, Card, CardHeader, IconButton, Chip, Avatar } from "@mui/material";
+import { Grid, Typography, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, FormControlLabel, FormLabel, Radio, RadioGroup, Button, Card, CardHeader, IconButton, Chip, Avatar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dudu from "./dudu.jpg";
@@ -36,6 +36,8 @@ interface Summary {
 
 
 const HomePage: React.FC = () => {
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [data, setData] = useState<Item[]>([]);
     const [paidBy, setPaidby] = useState("");
     const [currency, setCurreny] = useState(CURRENCIES[0]);
@@ -46,6 +48,16 @@ const HomePage: React.FC = () => {
         DS: { spent: 0, owed: 0 },
         KT: { spent: 0, owed: 0 },
     });
+
+    const handleClickOpen = (itemId: string) => {
+        setDialogOpen(true);
+        setItemToDelete(itemId);
+    };
+
+    const handleClose = () => {
+        setDialogOpen(false);
+        setItemToDelete(null);
+    };
 
 
     const handlePaidByChange = (event: SelectChangeEvent): void => {
@@ -131,15 +143,16 @@ const HomePage: React.FC = () => {
         fetchData();
     }, []);
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async () => {
         try {
-            await axios.delete(`${API_URL}/payments/${id}`);
+            await axios.delete(`${API_URL}/payments/${itemToDelete}`);
             // fetch again
             const response = await axios.get(`${API_URL}/payments`)
             setData(response.data);
         } catch (error) {
             console.error('Error deleting/fetching document: ', error);
         }
+        handleClose();
     };
 
     if (data.length === 0) {
@@ -257,7 +270,7 @@ const HomePage: React.FC = () => {
                                 item.description !== "First Test [Cannot be deleted]" ?
                                     <IconButton
                                         aria-label="delete"
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleClickOpen(item.id)}
                                     >
                                         <DeleteIcon />
                                     </IconButton> : null
@@ -267,6 +280,27 @@ const HomePage: React.FC = () => {
                 ))}
             </Grid>
         </Grid>
+        <Dialog
+            open={dialogOpen}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Are you sure you want to delete this item?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="warning">
+                    Cancel
+                </Button>
+                <Button onClick={handleDelete} color="primary" autoFocus>
+                    Delete
+                </Button>
+            </DialogActions>
+        </Dialog>
     </Container>
 };
 
