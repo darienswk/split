@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
 import {
   Grid,
   Typography,
@@ -54,8 +56,11 @@ interface Summary {
   owed: number;
 }
 
+// TODO: Handle empty data case
 const HomePage: React.FC = () => {
-  const [data, setData] = useState<Item[]>([]);
+  const { id } = useParams(); // Specify type for useParams
+  console.log(id);
+  const [data, setData] = useState<null | Item[]>(null);
   const [paidBy, setPaidby] = useState('');
   const [currency, setCurreny] = useState(CURRENCIES[0]);
   const [amount, setAmount] = useState<number | null>(null);
@@ -117,6 +122,10 @@ const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (data === null) {
+      return;
+    }
+
     const calculateSummary = () => {
       const summary: { [key: string]: Summary } = {
         DS: { spent: 0, owed: 0 },
@@ -152,7 +161,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/payments`);
+        const response = await axios.get(`${API_URL}/payments/${id}`);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -160,7 +169,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -173,7 +182,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  if (data.length === 0) {
+  if (data === null) {
     return <p>Loading...</p>;
   }
 

@@ -6,9 +6,9 @@ import {
   Box,
   Typography,
   Avatar,
-  CardContent,
   Card,
   CardActionArea,
+  CircularProgress,
 } from '@mui/material';
 import CardTravelIcon from '@mui/icons-material/CardTravel';
 import { API_URL } from './constants';
@@ -54,11 +54,20 @@ const TripPage: React.FC = () => {
   }, []);
 
   if (trips === null) {
-    return header;
+    return (
+      <Container>
+        <Grid container spacing={2}>
+          {header}
+          <Grid item xs={12} ml={50}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      </Container>
+    );
   }
 
   const handleClick = (tripId: string): void => {
-    window.open(`/${tripId}`); // Opens URL in a new tab
+    window.open(`/${tripId}`, '_self'); // Opens URL in a new tab
   };
 
   return (
