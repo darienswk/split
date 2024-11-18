@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
         };
 
         fetchData();
-        // fetchConversionRates();
+        fetchConversionRates();
     }, []);
 
     const handleDelete = async () => {
