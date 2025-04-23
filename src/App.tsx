@@ -1,6 +1,8 @@
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import '@fontsource/roboto';
+
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './HomePage';
 import TripPage from './TripPage';
 import darkTheme from './theme';

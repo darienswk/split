@@ -21,7 +21,7 @@ interface Trip {
 
 const header = (
   <Grid item container xs={12} mt={1}>
-    <Grid item xs={3}>
+    <Grid item xs={12} pl={12}>
       <Box
         component="img"
         src={
@@ -31,8 +31,10 @@ const header = (
         alt="Bubu Dudu GIF"
       />
     </Grid>
-    <Grid item xs={9} pt={10}>
-      <Typography variant="h3">Bubu and Dudu's Trips</Typography>
+    <Grid item xs={12} pl={11}>
+      <Typography variant="h2" sx={{ fontWeight: 'bold' }}>
+        Trips🛫
+      </Typography>
     </Grid>
   </Grid>
 );
@@ -58,7 +60,7 @@ const TripPage: React.FC = () => {
       <Container>
         <Grid container spacing={2}>
           {header}
-          <Grid item xs={12} ml={50}>
+          <Grid item xs={12} ml={20}>
             <CircularProgress />
           </Grid>
         </Grid>
@@ -67,7 +69,7 @@ const TripPage: React.FC = () => {
   }
 
   const handleClick = (tripId: string): void => {
-    window.open(`/${tripId}`, '_self'); // Opens URL in a new tab
+    window.open(`/split/#/${tripId}`, '_self'); // Opens URL in a new tab
   };
 
   return (
@@ -76,7 +78,7 @@ const TripPage: React.FC = () => {
         {header}
         <Grid item container xs={12} spacing={2}>
           {trips.map(trip => (
-            <Grid item xs={6} key={trip.id}>
+            <Grid item xs={12} key={trip.id}>
               <Card
                 sx={{
                   display: 'flex',
